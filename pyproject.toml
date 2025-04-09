@@ -1,0 +1,41 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[project]
+name = "golab"
+description = "Goldschen-Ohm lab software"
+dynamic = ["version"]
+authors = [
+    {name = "Marcel Goldschen-Ohm", email = "goldschen-ohm@utexas.edu"},
+]
+requires-python = ">=3.10"
+dependencies = [
+]
+readme = "README.md"
+keywords = ["Goldschen-Ohm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+
+[project.urls]
+homepage = "https://github.com/marcel-goldschen-ohm/GOLab"
+repository = "https://github.com/marcel-goldschen-ohm/GOLab"
+issues = "https://github.com/marcel-goldschen-ohm/GOLab/issues"
+
+
+[project.scripts]
+golabchart = "golab.golabchart.__main__:main"
+
+
+[tool.pdm]
+distribution = true
+
+
+[tool.pdm.version]
+source = "scm"
