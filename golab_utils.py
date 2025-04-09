@@ -19,6 +19,13 @@ def remove_outliers(df, columns=None):
 
 # Hill equation for fitting concentration-response curves
 def hill_equation(x, *params):
+    """ Hill equation for fitting concentration-response curves.
+    Args:
+        x: array of ligand concentrations
+        params: (ymax, EC50, slope) or (EC50, slope) -> ymax = 1
+    Returns:
+        y: array of response values
+    """
     if len(params) == 2:
         EC50, slope = params
         y = (x**slope) / (EC50**slope + x**slope)
@@ -31,12 +38,15 @@ def hill_equation(x, *params):
 # Optimize Hill fit parameters for concentration-response curve (CRC)
 def fit_CRC(x, y, params=None, bounds=None):
     if params is None:
+        # params: (ymax, EC50, slope)
         params = (max(y), np.median(x), 1)  # ymax, EC50, slope
     if bounds is None:
         if len(params) == 2:
-            bounds = [(min(x), 0), (max(x), np.inf)]
+            # params: (EC50, slope), ymax = 1
+            bounds = [(min(x), 0.1), (max(x), 10)]
         elif len(params) == 3:
-            bounds = [(0, min(x), 0), (np.inf, max(x), np.inf)]
+            # params: (ymax, EC50, slope)
+            bounds = [(0, min(x), 0.1), (np.inf, max(x), 10)]
     params, _ = sp.optimize.curve_fit(hill_equation, x, y, p0=params, bounds=bounds)
     return params
 
