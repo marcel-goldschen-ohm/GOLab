@@ -865,16 +865,51 @@ class GOLabChart(QMainWindow):
                 
                 for sweep in sweeps:
                     x, y = self._get_sweep_data(path, channel, sweep)
-
-                    if op_name == 'subtract baseline':
-                        ybaseline = self._get_baseline_prediction(x, y)
-                        if ybaseline is not None:
-                            result[channel].loc[{'sweep': sweep}] -= ybaseline.values
                     
-                    elif op_name == 'filter':
+                    if op_name == 'filter':
                         if not self._live_filter_checkbox.isChecked():
                             y.values = self._apply_filter(x, y).values
                         result[channel].loc[{'sweep': sweep}] = y.values
+
+                    elif op_name == 'subtract baseline':
+                        ybaseline = self._get_baseline_prediction(x, y)
+                        if ybaseline is not None:
+                            result[channel].loc[{'sweep': sweep}] -= ybaseline.values
+
+                    elif op_name == 'baseline rundown correction':
+                        if not path.endswith('Baselined'):
+                            QMessageBox.warning(self, 'Rundown Correction', 'Baseline rundown correction requires a /Baselined datatree node to be selected.')
+                            return
+                        baselined = y
+                        _, unbaselined = self._get_sweep_data(parent.parent.path, channel, sweep)
+                        baseline = unbaselined - baselined
+                        yscale = baseline.values / baseline.values[-1]
+                        # scale sweep to correct for baseline rundown
+                        result[channel].loc[{'sweep': sweep}] /= yscale
+
+                    elif op_name == 'linear two peaks rundown correction':
+                        regions = self.active_regions()
+                        if len(regions) != 2:
+                            QMessageBox.warning(self, 'Rundown Correction', 'Linear two peaks rundown correction requires two regions indicating the selected peaks.')
+                            return
+                        xpeaks = np.zeros(2)
+                        ypeaks = np.zeros(2)
+                        for i, region in enumerate(regions):
+                            xmin, xmax = region['region']
+                            mask = np.full(x.values.shape, False, dtype=bool)
+                            mask[(x.values >= xmin) & (x.values <= xmax)] = True
+                            xpeaks[i] = np.mean(x.values[mask])
+                            ypeaks[i] = np.median(y.values[mask])
+                        ind = np.argsort(xpeaks)
+                        xpeaks = xpeaks[ind]
+                        ypeaks = ypeaks[ind]
+                        # line through two peaks
+                        slope = (ypeaks[1] - ypeaks[0]) / (xpeaks[1] - xpeaks[0])
+                        intercept = ypeaks[0] - slope * xpeaks[0]
+                        yscale = np.polyval((slope, intercept), x.values) / ypeaks[1]
+                        # scale sweep to correct for linear rundown
+                        # so that amplitude of first peak matches that of the second peak
+                        result[channel].loc[{'sweep': sweep}] /= yscale
         
         # stop live filter if filter was applied
         if op_name == 'filter':
@@ -1289,8 +1324,8 @@ class GOLabChart(QMainWindow):
         self._regions_menu.addAction('Delete Active Regions', self.delete_active_regions)
 
         self._detrend_menu = menubar.addMenu("Detrend")
-        self._detrend_menu.addAction('Linear Two Peaks Rundown')
-        self._detrend_menu.addAction('Baseline Rundown')
+        self._detrend_menu.addAction('Linear Two Peaks Rundown Correction', lambda: self._apply_operation('linear two peaks rundown correction', 'Scaled'))
+        self._detrend_menu.addAction('Baseline Rundown Correction', lambda: self._apply_operation('baseline rundown correction', 'Scaled'))
     
     def _init_top_toolbar(self) -> None:
         self._top_toolbar = QToolBar()
