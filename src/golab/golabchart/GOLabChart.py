@@ -3,7 +3,6 @@ import os
 import datetime
 from pathlib import Path
 import numpy as np
-import pandas as pd
 import scipy as sp
 import xarray as xr
 import zarr
@@ -23,7 +22,6 @@ from importlib.metadata import version
 VERSION = version('golab')
 
 TODO = """
-- apply scaling
 """
 
 

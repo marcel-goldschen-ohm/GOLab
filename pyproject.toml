@@ -12,6 +12,22 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
+    "ipykernel",
+    "numpy",
+    "pandas",
+    "xarray",
+    "pint",
+    "zarr",
+    "scipy",
+    "matplotlib",
+    "lmfit>=1.2.2",
+    "qtpy>=2.4.1",
+    "qtawesome>=1.4.0",
+    "qtconsole>=5.5.2",
+    "pyqtgraph>=0.13.3",
+    "pyqt-ext@git+https://github.com/marcel-goldschen-ohm/pyqt-ext@v2025.4.9"
+    "pyqtgraph-ext@git+https://github.com/marcel-goldschen-ohm/pyqtgraph-ext@v2025.4.8"
+    "xarray-treeview@git+https://github.com/marcel-goldschen-ohm/xarray-treeview@v2025.4.9"
 ]
 readme = "README.md"
 keywords = ["Goldschen-Ohm"]
