@@ -25,9 +25,9 @@ dependencies = [
     "qtawesome>=1.4.0",
     "qtconsole>=5.5.2",
     "pyqtgraph>=0.13.3",
-    "pyqt-ext@git+https://github.com/marcel-goldschen-ohm/pyqt-ext@v2025.4.9"
-    "pyqtgraph-ext@git+https://github.com/marcel-goldschen-ohm/pyqtgraph-ext@v2025.4.8"
-    "xarray-treeview@git+https://github.com/marcel-goldschen-ohm/xarray-treeview@v2025.4.9"
+    "pyqt-ext>=2025.4.9.2",
+    "pyqtgraph-ext>=2025.4.9"
+    "xarray-treeview>=2025.4.9.2"
 ]
 readme = "README.md"
 keywords = ["Goldschen-Ohm"]
