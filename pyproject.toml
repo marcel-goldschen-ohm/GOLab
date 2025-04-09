@@ -29,7 +29,6 @@ authors = [
     {name = "Marcel Goldschen-Ohm", email = "goldschen-ohm@utexas.edu"},
 ]
 readme = "README.md"
-license = "MIT"
 keywords = ["Goldschen-Ohm"]
 classifiers = [
     "Development Status :: 3 - Alpha",
