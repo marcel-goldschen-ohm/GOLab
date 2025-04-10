@@ -22,6 +22,10 @@ from importlib.metadata import version
 VERSION = version('golab')
 
 TODO = """
+- align onset
+- sweep average
+- summary CRC
+- curve fit (include baseline correction here?)
 """
 
 
@@ -783,6 +787,9 @@ class GOLabChart(QMainWindow):
         # store data_var order
         if 'Data' in dt:
             dt['Data'].attrs['ordered_data_vars'] = list(dt['Data'].data_vars)
+        
+        # version metadata
+        dt.attrs['version'] = VERSION
         
         # save to file
         if filepath.suffix == '.zip':
