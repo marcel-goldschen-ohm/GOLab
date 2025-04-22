@@ -659,6 +659,7 @@ class GOLabChart(QMainWindow):
         for region in active_regions:
             region['group'] = group
         self._update_region_groups_menu()
+        self._update_active_regions()
 
     def format_active_regions(self) -> None:
         active_regions = self.active_regions()
