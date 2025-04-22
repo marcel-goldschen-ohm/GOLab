@@ -729,6 +729,11 @@ class GOLabChart(QMainWindow):
             ds: xr.Dataset = read_winwcp(str(filepath))
             dt = xr.DataTree()
             dt['Data'] = ds
+        elif filepath.suffix == '.mat':
+            from golab.io import read_adicht_mat
+            ds: xr.Dataset = read_adicht_mat(str(filepath))
+            dt = xr.DataTree()
+            dt['Data'] = ds
         elif filepath.suffix == '.zip':
             # assume file is a zarr zip store
             with zarr.storage.ZipStore(filepath, mode='r') as store:

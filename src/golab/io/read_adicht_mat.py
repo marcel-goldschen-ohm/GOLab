@@ -20,12 +20,19 @@ def read_adicht_mat(filepath: Path | str) -> xr.Dataset:
     #     if prefix in metric_scale_factors:
     #         current *= metric_scale_factors[prefix]
     #         current_units = current_units[1:]
+
+    voltage = matdict['voltage']
+    if voltage.ndim == 1:
+        voltage = voltage.reshape((1, -1))  # (sweep, time)
+    voltage_units = matdict['voltage_units']
+
     time = np.arange(current.shape[-1]) * matdict['time_interval_sec']
     time_units = 's'
 
     ds = xr.Dataset(
         data_vars={
             'current': xr.DataArray(data=current, dims=['sweep', 'time'], attrs={'units': current_units}),
+            'voltage': xr.DataArray(data=voltage, dims=['sweep', 'time'], attrs={'units': voltage_units}),
         },
         coords={
             'time': xr.DataArray(data=time, dims=['time'], attrs={'units': time_units}),
@@ -50,8 +57,6 @@ def read_adicht_mat(filepath: Path | str) -> xr.Dataset:
 
 if __name__ == '__main__':
     filepath = 'your/path/to/file.mat'  # change this
-    filepath = "/Users/marcel/Documents/GitHub/GOLab/2023_06_29 _GABAa a1L9'Tb2g2L.mat"
-    filepath = "/Users/marcel/Documents/GitHub/GOLab/2024-09-10_IL_1.mat"
     data = read_adicht_mat(filepath)
     print(data)
 
