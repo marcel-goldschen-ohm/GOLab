@@ -5,14 +5,15 @@
 adiFile = adi.readFile;
 
 [path, file, ext] = fileparts(adiFile.file_path);
-file_date = strrep(file(1:10), '_', '-');
 
-IL = adiFile.getChannelByName('IL');
-IR = adiFile.getChannelByName('IR');
-VL = adiFile.getChannelByName('VL');
-VR = adiFile.getChannelByName('VR');
+% current and voltage recordings for each of two TEVC rigs (left and right)
+IL = adiFile.getChannelByName('IL'); % channel 0
+VL = adiFile.getChannelByName('VL'); % channel 1
+IR = adiFile.getChannelByName('IR'); % channel 2
+VR = adiFile.getChannelByName('VR'); % channel 3
 
 for i = 1:adiFile.n_records
+    % recording from left rig
     data = struct;
     data.current = IL.getData(i);
     data.current_units = IL.units{i};
@@ -33,6 +34,7 @@ for i = 1:adiFile.n_records
     end
     save(filename, '-struct', 'data');
 
+    % recording from right rig
     data = struct;
     data.current = IR.getData(i);
     data.current_units = IR.units{i};

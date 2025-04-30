@@ -349,6 +349,7 @@ class GOLabChart(QMainWindow):
     
     def _update_sweeps_spinbox(self) -> None:
         sweeps = self.sweeps(include_masked=self._include_masked_sweeps_checkbox.isChecked())
+        print(sweeps)
         self._set_selectable_sweeps(sweeps)
     
     def sweep_status(self, sweep: int) -> str:
@@ -725,12 +726,12 @@ class GOLabChart(QMainWindow):
         
         # read data from file
         if filepath.suffix == '.wcp':
-            from golab.io import read_winwcp
+            from golab.io.read_winwcp import read_winwcp
             ds: xr.Dataset = read_winwcp(str(filepath))
             dt = xr.DataTree()
             dt['Data'] = ds
         elif filepath.suffix == '.mat':
-            from golab.io import read_adicht_mat
+            from golab.io.read_adicht_mat import read_adicht_mat
             ds: xr.Dataset = read_adicht_mat(str(filepath))
             dt = xr.DataTree()
             dt['Data'] = ds
